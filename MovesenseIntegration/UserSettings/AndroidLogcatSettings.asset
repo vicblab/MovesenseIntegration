@@ -3,7 +3,7 @@
     "m_SelectedPackage": {
         "deviceId": "J5Y7N17613003377",
         "name": "com.victor.easyexample",
-        "processId": 20133,
+        "processId": 9536,
         "exited": false
     },
     "m_SelectedPriority": 0,
@@ -11,61 +11,55 @@
         {
             "deviceId": "J5Y7N17613003377",
             "name": "com.victor.easyexample",
-            "processId": 11929,
-            "exited": true
-        },
-        {
-            "deviceId": "J5Y7N17613003377",
-            "name": "com.victor.easyexample",
-            "processId": 17977,
-            "exited": true
-        },
-        {
-            "deviceId": "J5Y7N17613003377",
-            "name": "com.victor.easyexample",
-            "processId": 32282,
-            "exited": true
-        },
-        {
-            "deviceId": "J5Y7N17613003377",
-            "name": "com.victor.easyexample",
-            "processId": 5026,
-            "exited": true
-        },
-        {
-            "deviceId": "J5Y7N17613003377",
-            "name": "com.victor.easyexample",
-            "processId": 9368,
+            "processId": 4276,
             "exited": true
         },
         {
             "deviceId": "J5Y7N17613003377",
             "name": "com.whatsapp",
-            "processId": 4121,
+            "processId": 4164,
+            "exited": true
+        },
+        {
+            "deviceId": "J5Y7N17613003377",
+            "name": "com.victor.easyexample",
+            "processId": 22235,
+            "exited": true
+        },
+        {
+            "deviceId": "J5Y7N17613003377",
+            "name": "com.victor.easyexample",
+            "processId": 23601,
+            "exited": true
+        },
+        {
+            "deviceId": "J5Y7N17613003377",
+            "name": "com.victor.easyexample",
+            "processId": 25689,
+            "exited": true
+        },
+        {
+            "deviceId": "J5Y7N17613003377",
+            "name": "com.victor.easyexample",
+            "processId": 25992,
             "exited": false
         },
         {
             "deviceId": "J5Y7N17613003377",
             "name": "com.victor.easyexample",
-            "processId": 24125,
+            "processId": 29808,
             "exited": false
         },
         {
             "deviceId": "J5Y7N17613003377",
             "name": "com.victor.easyexample",
-            "processId": 29377,
+            "processId": 4008,
             "exited": false
         },
         {
             "deviceId": "J5Y7N17613003377",
             "name": "com.victor.easyexample",
-            "processId": 3959,
-            "exited": false
-        },
-        {
-            "deviceId": "J5Y7N17613003377",
-            "name": "com.victor.easyexample",
-            "processId": 20133,
+            "processId": 9536,
             "exited": false
         }
     ],

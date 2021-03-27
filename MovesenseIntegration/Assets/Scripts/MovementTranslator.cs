@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-using AHRS;
-public class UpdateText : MonoBehaviour
+public class MovementTranslator : MonoBehaviour
 {
 
     [SerializeField] private Button button;
@@ -13,7 +12,12 @@ public class UpdateText : MonoBehaviour
     [SerializeField] private SensorObject sensor;
     [SerializeField] private GameObject leftFoot;
 
-    static MadgwickAHRS ahrs = new MadgwickAHRS(1f / 256f, 0.1f);
+    private bool isFirstTime = true;
+    private float time = 0.0f;
+    
+        
+
+    private AccelerometerUtil accelerometerUtil; //exported from AntiGravity.cs
 
     private Vector3 upvector;
     private Vector3 initialPosition;
@@ -57,32 +61,49 @@ public class UpdateText : MonoBehaviour
                     int index = 0;
                     if (sensor.SerialId == serial)
                     {
-                        
 
-                        Vector3 linVector = new Vector3((float)notificationFieldArgs.Values[index].x/20, (float)notificationFieldArgs.Values[index].y/20, (float)notificationFieldArgs.Values[index].z/20);
+
+                        time += Time.deltaTime;
+
+                        Vector3 linVector = new Vector3((float)notificationFieldArgs.Values[index].x, (float)notificationFieldArgs.Values[index].y, (float)notificationFieldArgs.Values[index].z);
                         Vector3 rotVector = new Vector3((float)notificationFieldArgs.Values[1].x/ 57.3f, 0.75f*(float)notificationFieldArgs.Values[1].y / 57.3f, (float)notificationFieldArgs.Values[1].z / 57.3f); // angular velocity
                         //argsVector=leftFoot.transform.TransformVector(argsVector);
                         //linVector += leftFoot.transform.InverseTransformDirection(leftFoot.transform.parent.transform.up )*-9.8f;//delete from here
                         //linVector += leftFoot.transform.parent.up * -9.8f;
+
+
+                        if (isFirstTime)
+                        {
+                            isFirstTime = false;
+                            accelerometerUtil = new AccelerometerUtil(linVector);
+                        }
+
+                        linVector = accelerometerUtil.LowPassFiltered(accelerometerUtil.LowPassFiltered(linVector));
+                        linVector = accelerometerUtil.LowPassFiltered(linVector);
+                        linVector = accelerometerUtil.LowPassFiltered(linVector);
+
                         text.text = $"{linVector.x:F2},{linVector.y:F2},{linVector.z:F2}"+"|||||"+ $"{rotVector.x:F2},{rotVector.y:F2},{rotVector.z:F2}";
 
-                        if (linVector.x < 0.3 && linVector.x > -0.3) linVector.x = 0;
-                        if (linVector.y < 0.3 && linVector.y > -0.3) linVector.y = 0;
-                        if (linVector.z < 0.3 && linVector.z > -0.3) linVector.z = 0;
+                        if (linVector.x < 0.1 && linVector.x > -0.1) linVector.x = 0;
+                        if (linVector.y < 0.1 && linVector.y > -0.1) linVector.y = 0;
+                        if (linVector.z < 0.1 && linVector.z > -0.1) linVector.z = 0;
 
                         //leftFoot.gameObject.GetComponent<Rigidbody>().useGravity = true;
 
-                        
+
                         //leftFoot.transform.Translate(linVector);
                         //leftFoot.gameObject.GetComponent<Rigidbody>().velocity += linVector * Time.deltaTime;
 
 
-                        leftFoot.gameObject.GetComponent<Rigidbody>().AddRelativeForce(linVector/10);
+                        //leftFoot.gameObject.GetComponent<Rigidbody>().AddRelativeForce(linVector/10);
+
+                        //leftFoot.transform.localPosition += linVector * (time * time) / 2; //mathematical integration
 
                         if (linVector == Vector3.zero)
                         {
                             leftFoot.gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
                             leftFoot.gameObject.GetComponent<Rigidbody>().useGravity = false;
+                            time = 0;
 
                         }
 
