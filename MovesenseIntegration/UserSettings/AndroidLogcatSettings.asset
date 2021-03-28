@@ -3,7 +3,7 @@
     "m_SelectedPackage": {
         "deviceId": "J5Y7N17613003377",
         "name": "com.victor.easyexample",
-        "processId": 4296,
+        "processId": 12132,
         "exited": false
     },
     "m_SelectedPriority": 0,
@@ -48,6 +48,12 @@
             "deviceId": "J5Y7N17613003377",
             "name": "com.victor.easyexample",
             "processId": 4296,
+            "exited": false
+        },
+        {
+            "deviceId": "J5Y7N17613003377",
+            "name": "com.victor.easyexample",
+            "processId": 12132,
             "exited": false
         }
     ],
