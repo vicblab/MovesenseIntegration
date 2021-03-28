@@ -12,19 +12,24 @@ public class MovementTranslator : MonoBehaviour
     [SerializeField] private SensorObject sensor;
     [SerializeField] private GameObject leftFoot;
 
-    private bool isFirstTime = true;
-    private float time = 0.0f;
+    /*private bool isFirstTime = true;
+    private float time = 0.0f;*/
     
         
 
-    private AccelerometerUtil accelerometerUtil; //exported from AntiGravity.cs
+    //private AccelerometerUtil accelerometerUtil; //exported from AntiGravity.cs
 
     private Vector3 upvector;
     private Vector3 initialPosition;
     private Quaternion initialRotation;
     private void Start()
     {
-        button.onClick.AddListener(() => MovesenseController.Connect(sensor.Mac));
+        button.onClick.AddListener(() =>
+        {
+            text.text = "Connecting to the sensor...";
+
+            MovesenseController.Connect(sensor.Mac);
+        });
         reset.onClick.AddListener(() => ResetPosition());
         MovesenseController.Event += OnMovesenseControllerCallbackEvent;
 
@@ -53,8 +58,7 @@ public class MovementTranslator : MonoBehaviour
                 for (int i = 0; i < e.OriginalEventArgs.Count; i++)
                 {
                     var ne = (NotificationCallback.EventArgs)e.OriginalEventArgs[i];
-                    //Debug.Log("Epic debug");
-                    //Debug.Log("OnMovesenseControllerCallbackEvent, NOTIFICATION for " + ne.Serial + ", SubscriptionPath: " + ne.Subscriptionpath + ", Data: " + ne.Data);
+                    
                     Debug.Log("NOTIFICATION for " + ne.Serial);
                     string serial = ne.Serial;
                     var notificationFieldArgs = (NotificationCallback.FieldArgs)ne;
@@ -63,16 +67,14 @@ public class MovementTranslator : MonoBehaviour
                     {
 
 
-                        time += Time.deltaTime;
+                        //time += Time.deltaTime;
 
                         Vector3 linVector = new Vector3((float)notificationFieldArgs.Values[index].x, (float)notificationFieldArgs.Values[index].y, (float)notificationFieldArgs.Values[index].z);
                         Vector3 rotVector = new Vector3((float)notificationFieldArgs.Values[1].x/ 57.3f, 0.75f*(float)notificationFieldArgs.Values[1].y / 57.3f, (float)notificationFieldArgs.Values[1].z / 57.3f); // angular velocity
-                        //argsVector=leftFoot.transform.TransformVector(argsVector);
-                        //linVector += leftFoot.transform.InverseTransformDirection(leftFoot.transform.parent.transform.up )*-9.8f;//delete from here
-                        //linVector += leftFoot.transform.parent.up * -9.8f;
+                        
 
 
-                        if (isFirstTime)
+                        /*if (isFirstTime)
                         {
                             isFirstTime = false;
                             accelerometerUtil = new AccelerometerUtil(linVector);
@@ -80,30 +82,26 @@ public class MovementTranslator : MonoBehaviour
 
                         linVector = accelerometerUtil.LowPassFiltered(accelerometerUtil.LowPassFiltered(linVector));
                         linVector = accelerometerUtil.LowPassFiltered(linVector);
-                        linVector = accelerometerUtil.LowPassFiltered(linVector);
+                        linVector = accelerometerUtil.LowPassFiltered(linVector);*/
 
-                        text.text = $"{linVector.x:F2},{linVector.y:F2},{linVector.z:F2}"+"|||||"+ $"{rotVector.x:F2},{rotVector.y:F2},{rotVector.z:F2}";
+                        text.text = "Acc: "+$"{linVector.x:F2},{linVector.y:F2},{linVector.z:F2}"+"\n Angular vel: "+ $"{rotVector.x:F2},{rotVector.y:F2},{rotVector.z:F2}";
 
                         if (linVector.x < 0.1 && linVector.x > -0.1) linVector.x = 0;
                         if (linVector.y < 0.1 && linVector.y > -0.1) linVector.y = 0;
                         if (linVector.z < 0.1 && linVector.z > -0.1) linVector.z = 0;
 
-                        //leftFoot.gameObject.GetComponent<Rigidbody>().useGravity = true;
+                        
 
 
-                        //leftFoot.transform.Translate(linVector);
-                        //leftFoot.gameObject.GetComponent<Rigidbody>().velocity += linVector * Time.deltaTime;
+                        //leftFoot.gameObject.GetComponent<Rigidbody>().AddRelativeForce(linVector*10, ForceMode.Acceleration);
 
-
-                        //leftFoot.gameObject.GetComponent<Rigidbody>().AddRelativeForce(linVector/10);
-
-                        //leftFoot.transform.localPosition += linVector * (time * time) / 2; //mathematical integration
+                        
 
                         if (linVector == Vector3.zero)
                         {
                             leftFoot.gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
                             leftFoot.gameObject.GetComponent<Rigidbody>().useGravity = false;
-                            time = 0;
+                            //time = 0;
 
                         }
 
@@ -116,14 +114,7 @@ public class MovementTranslator : MonoBehaviour
                         leftFoot.gameObject.GetComponent<Rigidbody>().angularVelocity= leftFoot.transform.TransformDirection(rotVector);
 
 
-                        /*--------------------------------------------------
-                        ahrs.Update(rotVector.x, rotVector.y, rotVector.z, linVector.x, linVector.y, linVector.z);
-                        var _q = ahrs.Quaternion;
-
-                        Quaternion q = new Quaternion(_q[0], _q[1], _q[2], _q[3]);
-                        var qEualr = q.eulerAngles;
-
-                        leftFoot.transform.rotation= Quaternion.Euler(qEualr.z, -qEualr.y, qEualr.x);*/
+                     
 
                     }
                 }

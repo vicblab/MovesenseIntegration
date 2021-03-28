@@ -3,7 +3,7 @@
     "m_SelectedPackage": {
         "deviceId": "J5Y7N17613003377",
         "name": "com.victor.easyexample",
-        "processId": 9536,
+        "processId": 4296,
         "exited": false
     },
     "m_SelectedPriority": 0,
@@ -11,55 +11,43 @@
         {
             "deviceId": "J5Y7N17613003377",
             "name": "com.victor.easyexample",
-            "processId": 4276,
-            "exited": true
-        },
-        {
-            "deviceId": "J5Y7N17613003377",
-            "name": "com.whatsapp",
-            "processId": 4164,
+            "processId": 1453,
             "exited": true
         },
         {
             "deviceId": "J5Y7N17613003377",
             "name": "com.victor.easyexample",
-            "processId": 22235,
+            "processId": 8510,
             "exited": true
         },
         {
             "deviceId": "J5Y7N17613003377",
             "name": "com.victor.easyexample",
-            "processId": 23601,
+            "processId": 9222,
             "exited": true
         },
         {
             "deviceId": "J5Y7N17613003377",
             "name": "com.victor.easyexample",
-            "processId": 25689,
+            "processId": 9450,
             "exited": true
         },
         {
             "deviceId": "J5Y7N17613003377",
             "name": "com.victor.easyexample",
-            "processId": 25992,
+            "processId": 13173,
+            "exited": true
+        },
+        {
+            "deviceId": "J5Y7N17613003377",
+            "name": "com.android.settings",
+            "processId": 2361,
             "exited": false
         },
         {
             "deviceId": "J5Y7N17613003377",
             "name": "com.victor.easyexample",
-            "processId": 29808,
-            "exited": false
-        },
-        {
-            "deviceId": "J5Y7N17613003377",
-            "name": "com.victor.easyexample",
-            "processId": 4008,
-            "exited": false
-        },
-        {
-            "deviceId": "J5Y7N17613003377",
-            "name": "com.victor.easyexample",
-            "processId": 9536,
+            "processId": 4296,
             "exited": false
         }
     ],

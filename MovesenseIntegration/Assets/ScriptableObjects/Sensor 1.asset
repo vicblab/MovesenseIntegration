@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Sensor 1
   m_EditorClassIdentifier: 
   sensorName: Sensor 1
-  mac: 0C:8C:DC:36:08:F8
-  serialId: 203130000182
+  mac: 0C:8C:DC:36:08:E0
+  serialId: 203130000171
