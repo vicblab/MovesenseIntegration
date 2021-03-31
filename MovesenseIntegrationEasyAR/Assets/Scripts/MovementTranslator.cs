@@ -34,7 +34,7 @@ public class MovementTranslator : MonoBehaviour
 
     private Vector3 initialPosition;
     private Quaternion initialRotation;
-
+    private float linealError = 0;
 
 
     private void Start()
@@ -100,9 +100,9 @@ public class MovementTranslator : MonoBehaviour
                         // here we extract linear acceleration (linVector) and angular velocity (rotVector)
 
                         Vector3 linVector = new Vector3((float)notificationFieldArgs.Values[0].x, (float)notificationFieldArgs.Values[0].y, (float)notificationFieldArgs.Values[0].z);
-                        Vector3 rotVector = new Vector3((float)notificationFieldArgs.Values[1].x/ 57.3f, 0.75f*(float)notificationFieldArgs.Values[1].y / 57.3f, (float)notificationFieldArgs.Values[1].z / 57.3f); // angular velocity
+                        Vector3 rotVector = new Vector3((float)notificationFieldArgs.Values[1].x/ 57.3f, (float)notificationFieldArgs.Values[1].y / 57.3f, (float)notificationFieldArgs.Values[1].z / 57.3f); // angular velocity
                         
-
+                                                                                                            //*0.75
 
                         //.......................Under construction.............................
 
@@ -119,22 +119,41 @@ public class MovementTranslator : MonoBehaviour
                         //...........................................................................
 
 
-                        //display the data as text
+                        
 
-                        text.text = "Acc: "+$"{linVector.x:F2},{linVector.y:F2},{linVector.z:F2}"+"\n Angular vel: "+ $"{rotVector.x:F2},{rotVector.y:F2},{rotVector.z:F2}";
+                        //------------------ROTATION----------------------------------------
+
+                        rotVector.y += 0.01f; // correction
+                        if (rotVector.magnitude < 0.15) rotVector = Vector3.zero;
+
+                        /*
+                        if (rotVector.x < 0.15 && rotVector.x > -0.15) rotVector.x = 0;
+                        if (rotVector.y < 0.15 && rotVector.y > -0.15) rotVector.y = 0;
+                        if (rotVector.z < 0.15 && rotVector.z > -0.15) rotVector.z = 0;*/
+
+
+
+
+                        foot.gameObject.GetComponent<Rigidbody>().angularVelocity = foot.transform.TransformDirection(rotVector);
+
 
 
                         //----------POSITION-------------------------
 
                         // threshold for linear acceleration
+
+                        if (linVector.magnitude < 0.2) linVector = Vector3.zero;
+                        /*
                         if (linVector.x < 0.1 && linVector.x > -0.1) linVector.x = 0;
                         if (linVector.y < 0.1 && linVector.y > -0.1) linVector.y = 0;
-                        if (linVector.z < 0.1 && linVector.z > -0.1) linVector.z = 0;
+                        if (linVector.z < 0.1 && linVector.z > -0.1) linVector.z = 0;*/
 
                         
 
+                        //linVector+= 9.82f* foot.transform.up;
 
-                        //leftFoot.gameObject.GetComponent<Rigidbody>().AddRelativeForce(linVector*10, ForceMode.Acceleration);
+
+                        //foot.gameObject.GetComponent<Rigidbody>().AddRelativeForce(linVector*10, ForceMode.Acceleration);
 
                         
                         // if the sensor is still
@@ -147,18 +166,14 @@ public class MovementTranslator : MonoBehaviour
                         }
 
 
-                        //------------------ROTATION----------------------------------------
-
-                        rotVector.y += 0.01f; // correction
-                        if (rotVector.x < 0.15 && rotVector.x > -0.15) rotVector.x = 0;
-                        if (rotVector.y < 0.15 && rotVector.y > -0.15) rotVector.y = 0;
-                        if (rotVector.z < 0.15 && rotVector.z > -0.15) rotVector.z = 0;
+                        //foot.transform.position += correctedAcc * ((Time.deltaTime * Time.deltaTime / 2) + linealError);
 
 
-                        foot.gameObject.GetComponent<Rigidbody>().angularVelocity= foot.transform.TransformDirection(rotVector);
 
+                        //display the data as text
 
-                     
+                        text.text = "Acc: " + $"{linVector.x:F2},{linVector.y:F2},{linVector.z:F2}" + "\n Angular vel: " + $"{rotVector.x:F2},{rotVector.y:F2},{rotVector.z:F2}";
+
 
                     }
                 }
