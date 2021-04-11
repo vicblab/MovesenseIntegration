@@ -19,23 +19,40 @@ public class MovementTranslator : MonoBehaviour
     [SerializeField] private SensorObject sensor; // the scriptable object sensor
     [SerializeField] private GameObject foot; // the sensor which represents the foot
 
+
+    private float SampleTime = 0.0f;
+
     //---------------Under construction-----------------------
 
     /*private bool isFirstTime = true;
-    private float time = 0.0f;*/
-    
-        
+    */
+
+
 
     //private AccelerometerUtil accelerometerUtil; //exported from AntiGravity.cs
 
-    //private Vector3 upvector;
+    private Vector3 upvector;
 
     //-----------------------------------------------------------
 
     private Vector3 initialPosition;
     private Quaternion initialRotation;
+    private Vector3 initialPositionR;
+    private Quaternion initialRotationR;
     private float linealError = 0;
 
+
+    //---------------------------------------------------------------
+
+    private float DEG_TO_RAD = Mathf.PI / 180;
+    private float lb; //leftBorder
+    private float rb; //rightBorder
+    float dt = 0;
+    int count = 0;
+
+    private Rigidbody rgd;
+    
+    Vector3 linAcc = Vector3.zero;
 
     private void Start()
     {
@@ -55,14 +72,37 @@ public class MovementTranslator : MonoBehaviour
         //upvector = leftFoot.transform.parent.transform.up * -9.8f/20;
         initialRotation = foot.transform.rotation;
         initialPosition = foot.transform.localPosition;
+
+        
+
+        upvector = new Vector3(0,1,0) * 10;
+
+
+        //------------------------------------------------------------------
+
+        // rotation thresholds in degrees per second
+        lb = -3 * DEG_TO_RAD; //leftBorder
+        rb = 3 * DEG_TO_RAD; //rightBorder
+
+        rgd = foot.gameObject.GetComponent<Rigidbody>();
+        initialRotationR = rgd.rotation;
+        initialPositionR = rgd.position;
+
+
     }
 
+    private void Update()
+    {
+        SampleTime += Time.deltaTime;
+    }
 
     //---- Reset the position, rotation and velocity of the foot-------
     private void ResetPosition()
     {
         foot.transform.localPosition = initialPosition;
         foot.transform.rotation = initialRotation;
+        rgd.rotation = initialRotationR;
+        rgd.position = initialPositionR;
         foot.gameObject.GetComponent<Rigidbody>().useGravity = false;
         foot.gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
     }
@@ -95,14 +135,52 @@ public class MovementTranslator : MonoBehaviour
                     {
 
 
+                        //---------------ROTATION----------------------------------
+                        if (string.Compare(notificationFieldArgs.Subscriptionpath, "Meas/Gyro/") == 0)
+                        {
+                            // obtaining both rotation vectors
+                            Vector3 rotVector1 = new Vector3((float)notificationFieldArgs.Values[0].x, (float)notificationFieldArgs.Values[0].y, (float)notificationFieldArgs.Values[0].z) * DEG_TO_RAD;
+                            Vector3 rotVector2 = new Vector3((float)notificationFieldArgs.Values[1].x, (float)notificationFieldArgs.Values[1].y, (float)notificationFieldArgs.Values[1].z) * DEG_TO_RAD;
+
+                            // ignoring noise-like disturbances (which are too subtle and don't reflect real rotation)
+                            if (rotVector1.x > lb && rotVector1.x < rb) rotVector1.x = 0;
+                            if (rotVector1.y > lb && rotVector1.y < rb) rotVector1.y = 0;
+                            if (rotVector1.z > lb && rotVector1.z < rb) rotVector1.z = 0;
+                            if (rotVector2.x > lb && rotVector2.x < rb) rotVector2.x = 0;
+                            if (rotVector2.y > lb && rotVector2.y < rb) rotVector2.y = 0;
+                            if (rotVector2.z > lb && rotVector2.z < rb) rotVector2.z = 0;
+
+
+                            rgd.angularVelocity = foot.transform.TransformDirection((rotVector1 + rotVector2) / 2);
+
+                            foot.transform.rotation = foot.transform.rotation * Quaternion.Euler(foot.transform.TransformDirection((rotVector1 + rotVector2) / 2) * Time.deltaTime);
+                        }
+
+                        //------------------------------------MOVEMENT------------------------------------------------------
+                        if (string.Compare(notificationFieldArgs.Subscriptionpath, "Meas/Acc/") == 0)
+                        {
+                            float correction = 30;
+
+                            Vector3 linVector1 = new Vector3((float)notificationFieldArgs.Values[0].x, (float)notificationFieldArgs.Values[0].y, (float)notificationFieldArgs.Values[0].z);
+                            Vector3 linVector2 = new Vector3((float)notificationFieldArgs.Values[1].x, (float)notificationFieldArgs.Values[1].y, (float)notificationFieldArgs.Values[1].z);
+                            linAcc += (linVector1 + linVector2) / 2;
+
+                            Vector3 correctedLinAcc = (linVector1 + linVector2) / 2 + foot.transform.GetChild(0).transform.InverseTransformDirection(upvector);
+
+                            text.text = "Acc: " + $"{correctedLinAcc.x:F2},{correctedLinAcc.y:F2},{correctedLinAcc.z:F2}";
+
+                            //upvector = Quaternion.AngleAxis(-rgd.rotation.z,Vector3.up) * upvector;
+                            //text.text = "Acc: " + $"{foot.transform.GetChild(0).transform.InverseTransformDirection(upvector).x:F2},{foot.transform.GetChild(0).transform.InverseTransformDirection(upvector).y:F2},{foot.transform.GetChild(0).transform.InverseTransformDirection(upvector).z:F2}"+ "\n AccReal: " + $"{((linVector1 + linVector2) / 2).x:F2},{((linVector1 + linVector2) / 2).y:F2},{((linVector1 + linVector2) / 2).z:F2}";
+                        }
                         //time += Time.deltaTime;
 
                         // here we extract linear acceleration (linVector) and angular velocity (rotVector)
 
-                        Vector3 linVector = new Vector3((float)notificationFieldArgs.Values[0].x, (float)notificationFieldArgs.Values[0].y, (float)notificationFieldArgs.Values[0].z);
-                        Vector3 rotVector = new Vector3((float)notificationFieldArgs.Values[1].x/ 57.3f, (float)notificationFieldArgs.Values[1].y / 57.3f, (float)notificationFieldArgs.Values[1].z / 57.3f); // angular velocity
-                        
-                                                                                                            //*0.75
+                        // Vector3 linVector = new Vector3((float)notificationFieldArgs.Values[0].x, (float)notificationFieldArgs.Values[0].y, (float)notificationFieldArgs.Values[0].z);
+                        //Vector3 rotVector = new Vector3((float)notificationFieldArgs.Values[1].x/ 57.3f, (float)notificationFieldArgs.Values[1].y / 57.3f, (float)notificationFieldArgs.Values[1].z / 57.3f); // angular velocity
+                        //Vector3 rotVector = new Vector3((float)notificationFieldArgs.Values[0].x/ 57.3f, (float)notificationFieldArgs.Values[0].y / 57.3f, (float)notificationFieldArgs.Values[0].z / 57.3f); // angular velocity
+
+                        //*0.75
 
                         //.......................Under construction.............................
 
@@ -118,13 +196,16 @@ public class MovementTranslator : MonoBehaviour
 
                         //...........................................................................
 
+                        // Get rid of gravity:
 
-                        
+                        //linVector += transform.InverseTransformDirection(upvector);//(Vector3.up * -9.8f);
+
+
 
                         //------------------ROTATION----------------------------------------
 
-                        rotVector.y += 0.01f; // correction
-                        if (rotVector.magnitude < 0.15) rotVector = Vector3.zero;
+                        //rotVector.y += 0.01f; // correction
+                        //if (rotVector.magnitude < 0.15) rotVector = Vector3.zero;
 
                         /*
                         if (rotVector.x < 0.15 && rotVector.x > -0.15) rotVector.x = 0;
@@ -134,7 +215,7 @@ public class MovementTranslator : MonoBehaviour
 
 
 
-                        foot.gameObject.GetComponent<Rigidbody>().angularVelocity = foot.transform.TransformDirection(rotVector);
+                        //foot.gameObject.GetComponent<Rigidbody>().angularVelocity = foot.transform.TransformDirection(rotVector);
 
 
 
@@ -142,37 +223,39 @@ public class MovementTranslator : MonoBehaviour
 
                         // threshold for linear acceleration
 
-                        if (linVector.magnitude < 0.2) linVector = Vector3.zero;
+                        //if (linVector.magnitude < 0.2) linVector = Vector3.zero;
                         /*
                         if (linVector.x < 0.1 && linVector.x > -0.1) linVector.x = 0;
                         if (linVector.y < 0.1 && linVector.y > -0.1) linVector.y = 0;
                         if (linVector.z < 0.1 && linVector.z > -0.1) linVector.z = 0;*/
 
-                        
+
 
                         //linVector+= 9.82f* foot.transform.up;
 
 
                         //foot.gameObject.GetComponent<Rigidbody>().AddRelativeForce(linVector*10, ForceMode.Acceleration);
 
-                        
+
                         // if the sensor is still
-                        if (linVector == Vector3.zero)
-                        {
-                            foot.gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
-                            foot.gameObject.GetComponent<Rigidbody>().useGravity = false;
-                            //time = 0;
+                        //if (linVector == Vector3.zero)
+                        //{
+                        //   foot.gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
+                        //   foot.gameObject.GetComponent<Rigidbody>().useGravity = false;
+                        //time = 0;
 
-                        }
+                        //}
 
 
-                        //foot.transform.position += correctedAcc * ((Time.deltaTime * Time.deltaTime / 2) + linealError);
+                        //foot.transform.position += linVector * ((SampleTime * SampleTime / 2) + linealError);
+
+
 
 
 
                         //display the data as text
 
-                        text.text = "Acc: " + $"{linVector.x:F2},{linVector.y:F2},{linVector.z:F2}" + "\n Angular vel: " + $"{rotVector.x:F2},{rotVector.y:F2},{rotVector.z:F2}";
+                        // text.text = "Acc: " + $"{linVector.x:F2},{linVector.y:F2},{linVector.z:F2}" + "\n Angular vel: " + $"{rotVector.x:F2},{rotVector.y:F2},{rotVector.z:F2}";
 
 
                     }

@@ -3,7 +3,7 @@
     "m_SelectedPackage": {
         "deviceId": "J5Y7N17613003377",
         "name": "com.victor.easyexample",
-        "processId": 26565,
+        "processId": 17474,
         "exited": false
     },
     "m_SelectedPriority": 0,
@@ -11,37 +11,85 @@
         {
             "deviceId": "J5Y7N17613003377",
             "name": "com.victor.easyexample",
-            "processId": 1812,
+            "processId": 31863,
             "exited": true
         },
         {
             "deviceId": "J5Y7N17613003377",
             "name": "com.victor.easyexample",
-            "processId": 4856,
+            "processId": 4940,
             "exited": true
         },
         {
             "deviceId": "J5Y7N17613003377",
             "name": "com.victor.easyexample",
-            "processId": 8936,
+            "processId": 15662,
             "exited": true
         },
         {
             "deviceId": "J5Y7N17613003377",
             "name": "com.victor.easyexample",
-            "processId": 11967,
+            "processId": 21121,
             "exited": true
         },
         {
             "deviceId": "J5Y7N17613003377",
             "name": "com.victor.easyexample",
-            "processId": 23897,
+            "processId": 29675,
             "exited": true
         },
         {
             "deviceId": "J5Y7N17613003377",
+            "name": "com.whatsapp",
+            "processId": 17790,
+            "exited": false
+        },
+        {
+            "deviceId": "J5Y7N17613003377",
             "name": "com.victor.easyexample",
-            "processId": 26565,
+            "processId": 3945,
+            "exited": false
+        },
+        {
+            "deviceId": "J5Y7N17613003377",
+            "name": "com.victor.easyexample",
+            "processId": 7855,
+            "exited": false
+        },
+        {
+            "deviceId": "J5Y7N17613003377",
+            "name": "com.victor.easyexample",
+            "processId": 13294,
+            "exited": false
+        },
+        {
+            "deviceId": "J5Y7N17613003377",
+            "name": "com.victor.easyexample",
+            "processId": 15527,
+            "exited": false
+        },
+        {
+            "deviceId": "J5Y7N17613003377",
+            "name": "com.victor.easyexample",
+            "processId": 17474,
+            "exited": false
+        },
+        {
+            "deviceId": "fc59ee41",
+            "name": "com.miui.home",
+            "processId": 2434,
+            "exited": false
+        },
+        {
+            "deviceId": "fc59ee41",
+            "name": "com.victor.easyexample",
+            "processId": 22102,
+            "exited": true
+        },
+        {
+            "deviceId": "fc59ee41",
+            "name": "com.victor.easyexample",
+            "processId": 23175,
             "exited": false
         }
     ],
