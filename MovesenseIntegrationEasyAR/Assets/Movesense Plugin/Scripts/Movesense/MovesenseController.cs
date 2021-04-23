@@ -62,7 +62,7 @@ public class MovesenseController : MonoBehaviour {
 	#endregion
 
 	#region Variables
-		public static bool				isInitialized;		
+		public static bool	isInitialized;		
 		private List<System.EventArgs>	notificationCallbackEventArgs = new List<System.EventArgs>();
 		private ReaderWriterLockSlim	notificationLock = new ReaderWriterLockSlim();
 		
@@ -73,8 +73,6 @@ public class MovesenseController : MonoBehaviour {
 		
 		private List<System.EventArgs>	responseEventArgs = new List<System.EventArgs>();
 		private ReaderWriterLockSlim	responseLock = new ReaderWriterLockSlim();
-
-		
 	#endregion
 
 	#region iOS-Callback methods
@@ -483,6 +481,7 @@ public class SubscriptionPath {
 	public const string MagneticField = "Meas/Magn/";
 	public const string HeartRate = "Meas/HR";
 	public const string Temperature = "Meas/Temp";
+	public const string IMU6 = "Meas/IMU6/";
 }
 
 /// <summary>The samplerates here are the ones supported by current Movesense sensor. You can query the current supported sample rates and other info from the sensor path /Meas/[sensor]/Info </summary>

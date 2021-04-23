@@ -65,9 +65,9 @@ public class SuperSimpleExample : MonoBehaviour {
 
 					Debug.Log("OnMovesenseControllerCallbackEvent, CONNECTED " + ce.MacID + ", subscribing linearAcceleration");
 					
-					MovesenseController.Subscribe(ce.Serial, SubscriptionPath.LinearAcceleration, SampleRate.slower);
-
-					MovesenseController.Subscribe(ce.Serial, SubscriptionPath.AngularVelocity, SampleRate.slower);//modified
+					MovesenseController.Subscribe(ce.Serial, SubscriptionPath.LinearAcceleration, SampleRate.medium);
+					
+					MovesenseController.Subscribe(ce.Serial, SubscriptionPath.AngularVelocity, SampleRate.medium);//modified
 				
 					//MovesenseController.Subscribe(ce.Serial, SubscriptionPath.MagneticField, SampleRate.medium);//modified
 				}
